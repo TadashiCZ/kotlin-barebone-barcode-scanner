@@ -37,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView;
 public class EntryChoiceActivity extends AppCompatActivity {
 
     private enum EntryMode {
-        ENTRY_JAVA(R.string.entry_java_title, R.string.entry_java_subtitle),
         ENTRY_KOTLIN(R.string.entry_kotlin_title, R.string.entry_kotlin_subtitle);
 
         private final int titleResId;
@@ -105,14 +104,10 @@ public class EntryChoiceActivity extends AppCompatActivity {
                 itemView.setOnClickListener(view -> {
                     Activity activity = EntryChoiceActivity.this;
                     switch (entryMode) {
-                      case ENTRY_JAVA:
-                        activity.startActivity(new Intent(activity,
-                                com.google.firebase.ml.md.java.MainActivity.class));
-                        break;
-                      case ENTRY_KOTLIN:
-                        activity.startActivity(new Intent(activity,
-                                com.google.firebase.ml.md.kotlin.MainActivity.class));
-                        break;
+                        case ENTRY_KOTLIN:
+                            activity.startActivity(new Intent(activity,
+                                    com.google.firebase.ml.md.kotlin.MainActivity.class));
+                            break;
                     }
                 });
             }

@@ -16,7 +16,6 @@
 
 package com.google.firebase.ml.md.kotlin
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,8 +32,6 @@ import com.google.firebase.ml.md.R
 class MainActivity : AppCompatActivity() {
 
     private enum class DetectionMode(val titleResId: Int, val subtitleResId: Int) {
-        ODT_LIVE(R.string.mode_odt_live_title, R.string.mode_odt_live_subtitle),
-        ODT_STATIC(R.string.mode_odt_static_title, R.string.mode_odt_static_subtitle),
         BARCODE_LIVE(R.string.mode_barcode_live_title, R.string.mode_barcode_live_subtitle)
     }
 
@@ -57,26 +54,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Utils.REQUEST_CODE_PHOTO_LIBRARY &&
-                resultCode == Activity.RESULT_OK &&
-                data != null) {
-            val intent = Intent(this, StaticObjectDetectionActivity::class.java)
-            intent.data = data.data
-            startActivity(intent)
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
     private inner class ModeItemAdapter internal constructor(private val detectionModes: Array<DetectionMode>) :
         RecyclerView.Adapter<ModeItemAdapter.ModeItemViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModeItemViewHolder {
             return ModeItemViewHolder(
-                    LayoutInflater.from(parent.context)
-                            .inflate(R.layout.detection_mode_item, parent, false
-                            )
+                LayoutInflater.from(parent.context)
+                    .inflate(
+                        R.layout.detection_mode_item, parent, false
+                    )
             )
         }
 
@@ -96,9 +82,6 @@ class MainActivity : AppCompatActivity() {
                 itemView.setOnClickListener {
                     val activity = this@MainActivity
                     when (detectionMode) {
-                        DetectionMode.ODT_LIVE ->
-                            activity.startActivity(Intent(activity, LiveObjectDetectionActivity::class.java))
-                        DetectionMode.ODT_STATIC -> Utils.openImagePicker(activity)
                         DetectionMode.BARCODE_LIVE ->
                             activity.startActivity(Intent(activity, LiveBarcodeScanningActivity::class.java))
                     }
