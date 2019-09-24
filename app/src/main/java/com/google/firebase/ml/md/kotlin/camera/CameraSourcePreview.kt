@@ -23,7 +23,6 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.FrameLayout
 import com.google.android.gms.common.images.Size
-import com.google.firebase.ml.md.R
 import com.google.firebase.ml.md.kotlin.Utils
 import java.io.IOException
 
@@ -94,15 +93,9 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
             val excessLenInHalf = (childHeight - layoutHeight) / 2
             for (i in 0 until childCount) {
                 val childView = getChildAt(i)
-                when (childView.id) {
-                    R.id.static_overlay_container -> {
-                        childView.layout(0, 0, childWidth, layoutHeight)
-                    }
-                    else -> {
-                        childView.layout(
-                            0, -excessLenInHalf, childWidth, layoutHeight + excessLenInHalf)
-                    }
-                }
+                childView.layout(
+                    0, -excessLenInHalf, childWidth, layoutHeight + excessLenInHalf
+                )
             }
         }
 

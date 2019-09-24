@@ -8,10 +8,6 @@
   <com.google.firebase.ml.md.kotlin.camera.CameraSourcePreview
       android:id="@+id/camera_preview"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
-
-    <include layout="@layout/camera_preview_overlay_kotlin"/>
-
-  </com.google.firebase.ml.md.kotlin.camera.CameraSourcePreview>
+      android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

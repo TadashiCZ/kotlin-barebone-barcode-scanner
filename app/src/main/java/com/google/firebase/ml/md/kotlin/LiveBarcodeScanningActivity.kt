@@ -27,7 +27,6 @@ import com.google.firebase.ml.md.R
 import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeProcessor
 import com.google.firebase.ml.md.kotlin.camera.CameraSource
 import com.google.firebase.ml.md.kotlin.camera.CameraSourcePreview
-import com.google.firebase.ml.md.kotlin.camera.GraphicOverlay
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel.WorkflowState
 import java.io.IOException
@@ -37,7 +36,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity() {
 
     private var cameraSource: CameraSource? = null
     private var preview: CameraSourcePreview? = null
-    private var graphicOverlay: GraphicOverlay? = null
     private var workflowModel: WorkflowModel? = null
     private var currentWorkflowState: WorkflowState? = null
 
@@ -46,12 +44,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_live_barcode_kotlin)
         preview = findViewById(R.id.camera_preview)
-
-        graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
-            cameraSource = CameraSource(context, this)
-        }
-
-
+        cameraSource = CameraSource(preview!!)
         setUpWorkflowModel()
     }
 
