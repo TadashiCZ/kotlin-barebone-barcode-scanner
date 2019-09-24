@@ -48,43 +48,11 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass
-     * this and implement the [Graphic.draw] method to define the graphics element. Add
-     * instances to the overlay using [GraphicOverlay.add].
+     * this and implement the [Graphic.draw] method to define the graphics element.
      */
     abstract class Graphic protected constructor(protected val overlay: GraphicOverlay) {
         /** Draws the graphic on the supplied canvas.  */
         abstract fun draw(canvas: Canvas)
-    }
-
-    /** Removes all graphics from the overlay.  */
-    fun clear() {
-        synchronized(lock) {
-            graphics.clear()
-        }
-        postInvalidate()
-    }
-
-    /** Adds a graphic to the overlay.  */
-    fun add(graphic: Graphic) {
-        synchronized(lock) {
-            graphics.add(graphic)
-        }
-    }
-
-    /**
-     * Sets the camera attributes for size and facing direction, which informs how to transform image
-     * coordinates later.
-     */
-    fun setCameraInfo(cameraSource: CameraSource) {
-        val previewSize = cameraSource.previewSize ?: return
-        if (Utils.isPortraitMode(context)) {
-            // Swap width and height when in portrait, since camera's natural orientation is landscape.
-            previewWidth = previewSize.height
-            previewHeight = previewSize.width
-        } else {
-            previewWidth = previewSize.width
-            previewHeight = previewSize.height
-        }
     }
 
     /** Draws the overlay with its associated graphic objects.  */

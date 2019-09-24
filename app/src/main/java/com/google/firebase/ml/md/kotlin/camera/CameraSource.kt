@@ -216,7 +216,6 @@ class CameraSource(private val context: Context, private val graphicOverlay: Gra
 
     @Throws(IOException::class)
     private fun setPreviewAndPictureSize(camera: Camera, parameters: Parameters) {
-        // Gives priority to the preview size specified by the user if exists.
         val sizePair: CameraSizePair = run {
             // Camera preview size is based on the landscape mode, so we need to also use the aspect
             // ration of display in the same mode for comparison.
