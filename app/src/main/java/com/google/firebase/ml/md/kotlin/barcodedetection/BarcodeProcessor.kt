@@ -20,6 +20,7 @@ import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.md.kotlin.camera.FrameProcessorBase
+import com.google.firebase.ml.md.kotlin.camera.GraphicOverlay
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel.WorkflowState
 import com.google.firebase.ml.vision.FirebaseVision
@@ -41,19 +42,22 @@ class BarcodeProcessor(private val workflowModel: WorkflowModel) :
         image: FirebaseVisionImage,
         results: List<FirebaseVisionBarcode>
     ) {
+
         if (!workflowModel.isCameraLive) return
 
         Log.d(TAG, "Barcode result size: ${results.size}")
 
-        // Picks the barcode, if exists.
-        val barcodeInCenter = if (results.isEmpty()) null else results.first()
+        // Picks the barcode, if exists, that covers the center of graphic overlay.
 
-        if (barcodeInCenter == null) {
+        val barcodeFound = results.firstOrNull()
+
+        if (barcodeFound == null) {
             workflowModel.setWorkflowState(WorkflowState.DETECTING)
         } else {
-            // Barcode found.
             workflowModel.setWorkflowState(WorkflowState.DETECTED)
-            workflowModel.detectedBarcode.setValue(barcodeInCenter)
+            workflowModel.detectedBarcode.setValue(barcodeFound)
+
+
         }
     }
 

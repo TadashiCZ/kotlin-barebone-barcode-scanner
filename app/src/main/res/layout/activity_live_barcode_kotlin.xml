@@ -10,12 +10,8 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-  </com.google.firebase.ml.md.kotlin.camera.CameraSourcePreview>
+    <include layout="@layout/camera_preview_overlay_kotlin"/>
 
-  <include
-      layout="@layout/top_action_bar_in_live_camera"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="top"/>
+  </com.google.firebase.ml.md.kotlin.camera.CameraSourcePreview>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -16,13 +16,15 @@
 
 package com.google.firebase.ml.md.kotlin
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
 import com.google.firebase.ml.md.R
 import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeField
@@ -30,16 +32,18 @@ import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeProcessor
 import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeResultFragment
 import com.google.firebase.ml.md.kotlin.camera.CameraSource
 import com.google.firebase.ml.md.kotlin.camera.CameraSourcePreview
+import com.google.firebase.ml.md.kotlin.camera.GraphicOverlay
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel.WorkflowState
 import java.io.IOException
 import java.util.*
 
 /** Demonstrates the barcode scanning workflow using camera preview.  */
-class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
+class LiveBarcodeScanningActivity : AppCompatActivity() {
 
     private var cameraSource: CameraSource? = null
     private var preview: CameraSourcePreview? = null
+    private var graphicOverlay: GraphicOverlay? = null
     private var settingsButton: View? = null
     private var flashButton: View? = null
     private var workflowModel: WorkflowModel? = null
@@ -50,7 +54,10 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
 
         setContentView(R.layout.activity_live_barcode_kotlin)
         preview = findViewById(R.id.camera_preview)
-        cameraSource = CameraSource(this.applicationContext)
+
+        graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
+            cameraSource = CameraSource(context, this)
+        }
 
 
         setUpWorkflowModel()
@@ -58,6 +65,10 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
 
     override fun onResume() {
         super.onResume()
+
+        if (!Utils.allPermissionsGranted(this)) {
+            Utils.requestRuntimePermissions(this)
+        }
 
         workflowModel?.markCameraFrozen()
         settingsButton?.isEnabled = true
@@ -81,12 +92,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
         super.onDestroy()
         cameraSource?.release()
         cameraSource = null
-    }
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.close_button -> onBackPressed()
-        }
     }
 
     private fun startCameraPreview() {
@@ -127,10 +132,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
             Log.d(TAG, "Current workflow state: ${currentWorkflowState!!.name}")
 
             when (workflowState) {
-                WorkflowState.NOT_STARTED -> {
-                    stopCameraPreview()
-                }
-
                 WorkflowState.DETECTING -> {
                     startCameraPreview()
                 }

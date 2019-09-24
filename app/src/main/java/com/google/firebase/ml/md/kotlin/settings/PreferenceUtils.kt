@@ -17,20 +17,23 @@
 package com.google.firebase.ml.md.kotlin.settings
 
 import android.content.Context
+import android.graphics.RectF
 import android.preference.PreferenceManager
 import androidx.annotation.StringRes
 import com.google.android.gms.common.images.Size
 import com.google.firebase.ml.md.R
 import com.google.firebase.ml.md.kotlin.camera.CameraSizePair
+import com.google.firebase.ml.md.kotlin.camera.GraphicOverlay
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
 
 /** Utility class to retrieve shared preferences.  */
 object PreferenceUtils {
 
     fun saveStringPreference(context: Context, @StringRes prefKeyId: Int, value: String?) {
         PreferenceManager.getDefaultSharedPreferences(context)
-            .edit()
-            .putString(context.getString(prefKeyId), value)
-            .apply()
+                .edit()
+                .putString(context.getString(prefKeyId), value)
+                .apply()
     }
 
 
@@ -40,12 +43,10 @@ object PreferenceUtils {
             val pictureSizePrefKey = context.getString(R.string.pref_key_rear_camera_picture_size)
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
             CameraSizePair(
-                Size.parseSize(sharedPreferences.getString(previewSizePrefKey, null)),
-                Size.parseSize(sharedPreferences.getString(pictureSizePrefKey, null))
-            )
+                    Size.parseSize(sharedPreferences.getString(previewSizePrefKey, null)),
+                    Size.parseSize(sharedPreferences.getString(pictureSizePrefKey, null)))
         } catch (e: Exception) {
             null
         }
     }
-
 }
