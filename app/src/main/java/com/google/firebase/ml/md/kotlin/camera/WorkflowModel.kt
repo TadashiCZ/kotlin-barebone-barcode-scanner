@@ -40,8 +40,7 @@ class WorkflowModel(application: Application) : AndroidViewModel(application) {
      */
     enum class WorkflowState {
         NOT_STARTED,
-        DETECTING,
-        DETECTED
+        DETECTING
     }
 
     @MainThread

@@ -53,7 +53,6 @@ class BarcodeProcessor(private val workflowModel: WorkflowModel) :
         if (barcodeFound == null) {
             workflowModel.setWorkflowState(WorkflowState.DETECTING)
         } else {
-            workflowModel.setWorkflowState(WorkflowState.DETECTED)
             workflowModel.detectedBarcode.setValue(barcodeFound)
 
 

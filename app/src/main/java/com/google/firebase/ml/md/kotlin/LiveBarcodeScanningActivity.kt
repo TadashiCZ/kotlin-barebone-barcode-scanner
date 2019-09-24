@@ -18,22 +18,19 @@ package com.google.firebase.ml.md.kotlin
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.common.base.Objects
 import com.google.firebase.ml.md.R
-import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeField
 import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeProcessor
-import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeResultFragment
 import com.google.firebase.ml.md.kotlin.camera.CameraSource
 import com.google.firebase.ml.md.kotlin.camera.CameraSourcePreview
 import com.google.firebase.ml.md.kotlin.camera.GraphicOverlay
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel.WorkflowState
 import java.io.IOException
-import java.util.*
 
 /** Demonstrates the barcode scanning workflow using camera preview.  */
 class LiveBarcodeScanningActivity : AppCompatActivity() {
@@ -41,8 +38,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity() {
     private var cameraSource: CameraSource? = null
     private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
-    private var settingsButton: View? = null
-    private var flashButton: View? = null
     private var workflowModel: WorkflowModel? = null
     private var currentWorkflowState: WorkflowState? = null
 
@@ -68,15 +63,9 @@ class LiveBarcodeScanningActivity : AppCompatActivity() {
         }
 
         workflowModel?.markCameraFrozen()
-        settingsButton?.isEnabled = true
         currentWorkflowState = WorkflowState.NOT_STARTED
         cameraSource?.setFrameProcessor(BarcodeProcessor(workflowModel!!))
         workflowModel?.setWorkflowState(WorkflowState.DETECTING)
-    }
-
-    override fun onPostResume() {
-        super.onPostResume()
-        BarcodeResultFragment.dismiss(supportFragmentManager)
     }
 
     override fun onPause() {
@@ -110,7 +99,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity() {
         val workflowModel = this.workflowModel ?: return
         if (workflowModel.isCameraLive) {
             workflowModel.markCameraFrozen()
-            flashButton?.isSelected = false
             preview?.stop()
         }
     }
@@ -132,17 +120,12 @@ class LiveBarcodeScanningActivity : AppCompatActivity() {
                 WorkflowState.DETECTING -> {
                     startCameraPreview()
                 }
-                WorkflowState.DETECTED -> {
-                    stopCameraPreview()
-                }
             }
         })
 
         workflowModel?.detectedBarcode?.observe(this, Observer { barcode ->
             if (barcode != null) {
-                val barcodeFieldList = ArrayList<BarcodeField>()
-                barcodeFieldList.add(BarcodeField("Raw Value", barcode.rawValue ?: ""))
-                BarcodeResultFragment.show(supportFragmentManager, barcodeFieldList)
+                Toast.makeText(applicationContext, barcode.rawValue, Toast.LENGTH_SHORT).show()
             }
         })
     }
