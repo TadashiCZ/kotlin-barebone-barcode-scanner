@@ -20,7 +20,6 @@ import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.md.kotlin.camera.FrameProcessorBase
-import com.google.firebase.ml.md.kotlin.camera.GraphicOverlay
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel.WorkflowState
 import com.google.firebase.ml.vision.FirebaseVision

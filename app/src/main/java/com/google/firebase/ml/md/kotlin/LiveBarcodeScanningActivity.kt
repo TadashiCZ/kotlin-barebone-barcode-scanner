@@ -16,15 +16,12 @@
 
 package com.google.firebase.ml.md.kotlin
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
 import com.google.firebase.ml.md.R
 import com.google.firebase.ml.md.kotlin.barcodedetection.BarcodeField

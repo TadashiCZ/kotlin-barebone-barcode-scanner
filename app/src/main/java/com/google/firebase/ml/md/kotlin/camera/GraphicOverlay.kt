@@ -18,12 +18,11 @@ package com.google.firebase.ml.md.kotlin.camera
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Rect
-import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import com.google.firebase.ml.md.kotlin.Utils
-import java.util.ArrayList
+import com.google.firebase.ml.md.kotlin.camera.GraphicOverlay.Graphic
+import java.util.*
 
 /**
  * A view which renders a series of custom graphics to be overlaid on top of an associated preview
@@ -53,8 +52,6 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
      * instances to the overlay using [GraphicOverlay.add].
      */
     abstract class Graphic protected constructor(protected val overlay: GraphicOverlay) {
-        protected val context: Context = overlay.context
-
         /** Draws the graphic on the supplied canvas.  */
         abstract fun draw(canvas: Canvas)
     }
@@ -89,20 +86,6 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
             previewHeight = previewSize.height
         }
     }
-
-    fun translateX(x: Float): Float = x * widthScaleFactor
-    fun translateY(y: Float): Float = y * heightScaleFactor
-
-    /**
-     * Adjusts the `rect`'s coordinate from the preview's coordinate system to the view
-     * coordinate system.
-     */
-    fun translateRect(rect: Rect) = RectF(
-            translateX(rect.left.toFloat()),
-            translateY(rect.top.toFloat()),
-            translateX(rect.right.toFloat()),
-            translateY(rect.bottom.toFloat())
-    )
 
     /** Draws the overlay with its associated graphic objects.  */
     override fun onDraw(canvas: Canvas) {
