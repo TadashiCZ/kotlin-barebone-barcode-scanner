@@ -24,6 +24,7 @@ import com.google.firebase.ml.md.kotlin.camera.WorkflowModel
 import com.google.firebase.ml.md.kotlin.camera.WorkflowModel.WorkflowState
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import java.io.IOException
 
@@ -31,7 +32,9 @@ import java.io.IOException
 class BarcodeProcessor(private val workflowModel: WorkflowModel) :
     FrameProcessorBase<List<FirebaseVisionBarcode>>() {
 
-    private val detector = FirebaseVision.getInstance().visionBarcodeDetector
+    private val options =
+        FirebaseVisionBarcodeDetectorOptions.Builder().setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE).build()
+    private val detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options)
 
     override fun detectInImage(image: FirebaseVisionImage): Task<List<FirebaseVisionBarcode>> =
         detector.detectInImage(image)

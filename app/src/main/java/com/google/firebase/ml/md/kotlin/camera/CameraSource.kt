@@ -31,6 +31,8 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.ceil
 
 /**
  * Manages the camera and allows UI updates on top of it (e.g. overlaying extra Graphics). This
@@ -74,7 +76,6 @@ class CameraSource(val preview: CameraSourcePreview) {
      * identity ('==') check on the keys.
      */
     private val bytesToByteBuffer = IdentityHashMap<ByteArray, ByteBuffer>()
-    // private val context: Context = graphicOverlay.context
 
     /**
      * Opens the camera and starts sending preview frames to the underlying detector. The supplied
@@ -141,7 +142,6 @@ class CameraSource(val preview: CameraSourcePreview) {
 
     /** Stops the camera and releases the resources of the camera and underlying detector.  */
     fun release() {
-        // graphicOverlay.clear()
         synchronized(processorLock) {
             stop()
             frameProcessor?.stop()
@@ -149,17 +149,10 @@ class CameraSource(val preview: CameraSourcePreview) {
     }
 
     fun setFrameProcessor(processor: FrameProcessor) {
-        // graphicOverlay.clear()
         synchronized(processorLock) {
             frameProcessor?.stop()
             frameProcessor = processor
         }
-    }
-
-    fun updateFlashMode(flashMode: String) {
-        val parameters = camera?.parameters
-        parameters?.flashMode = flashMode
-        camera?.parameters = parameters
     }
 
     /**
@@ -231,13 +224,11 @@ class CameraSource(val preview: CameraSourcePreview) {
         previewSize = sizePair.preview.also {
             Log.v(TAG, "Camera preview size: $it")
             parameters.setPreviewSize(it.width, it.height)
-            //PreferenceUtils.saveStringPreference(context, R.string.pref_key_rear_camera_preview_size, it.toString())
         }
 
         sizePair.picture?.let { pictureSize ->
             Log.v(TAG, "Camera picture size: $pictureSize")
             parameters.setPictureSize(pictureSize.width, pictureSize.height)
-            //  PreferenceUtils.saveStringPreference(context, R.string.pref_key_rear_camera_picture_size, pictureSize.toString())
         }
     }
 
@@ -278,7 +269,7 @@ class CameraSource(val preview: CameraSourcePreview) {
     private fun createPreviewBuffer(previewSize: Size): ByteArray {
         val bitsPerPixel = ImageFormat.getBitsPerPixel(IMAGE_FORMAT)
         val sizeInBits = previewSize.height.toLong() * previewSize.width.toLong() * bitsPerPixel.toLong()
-        val bufferSize = Math.ceil(sizeInBits / 8.0).toInt() + 1
+        val bufferSize = ceil(sizeInBits / 8.0).toInt() + 1
 
         // Creating the byte array this way and wrapping it, as opposed to using .allocate(),
         // should guarantee that there will be an array to work with.
@@ -396,7 +387,6 @@ class CameraSource(val preview: CameraSourcePreview) {
                     synchronized(processorLock) {
                         val frameMetadata = FrameMetadata(previewSize!!.width, previewSize!!.height, rotation)
                         data?.let {
-                            // frameProcessor?.process(it, frameMetadata, graphicOverlay)
                             frameProcessor?.process(it, frameMetadata)
                         }
                     }
@@ -460,8 +450,8 @@ class CameraSource(val preview: CameraSourcePreview) {
                 }
 
                 val previewAspectRatio = previewSize.width.toFloat() / previewSize.height.toFloat()
-                val aspectRatioDiff = Math.abs(displayAspectRatioInLandscape - previewAspectRatio)
-                if (Math.abs(aspectRatioDiff - minAspectRatioDiff) < Utils.ASPECT_RATIO_TOLERANCE) {
+                val aspectRatioDiff = abs(displayAspectRatioInLandscape - previewAspectRatio)
+                if (abs(aspectRatioDiff - minAspectRatioDiff) < Utils.ASPECT_RATIO_TOLERANCE) {
                     if (selectedPair == null || selectedPair.preview.width < sizePair.preview.width) {
                         selectedPair = sizePair
                     }
@@ -478,8 +468,8 @@ class CameraSource(val preview: CameraSourcePreview) {
                 for (sizePair in validPreviewSizes) {
                     val size = sizePair.preview
                     val diff =
-                        Math.abs(size.width - DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH) +
-                                Math.abs(size.height - DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT)
+                        abs(size.width - DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH) +
+                                abs(size.height - DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT)
                     if (diff < minDiff) {
                         selectedPair = sizePair
                         minDiff = diff
@@ -511,7 +501,7 @@ class CameraSource(val preview: CameraSourcePreview) {
             for (range in camera.parameters.supportedPreviewFpsRange) {
                 val deltaMin = desiredPreviewFpsScaled - range[Parameters.PREVIEW_FPS_MIN_INDEX]
                 val deltaMax = desiredPreviewFpsScaled - range[Parameters.PREVIEW_FPS_MAX_INDEX]
-                val diff = Math.abs(deltaMin) + Math.abs(deltaMax)
+                val diff = abs(deltaMin) + abs(deltaMax)
                 if (diff < minDiff) {
                     selectedFpsRange = range
                     minDiff = diff
